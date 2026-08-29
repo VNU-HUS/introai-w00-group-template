@@ -1,0 +1,50 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
+{
+	"name": "Ubuntu",
+	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+	"image": "ghcr.io/hoanganhduc/vnu-hus-mat3508@sha256:5e88aec28adeb59ff274924df7fef390a0ba7b76aab2e896cdd9cb36fb2fc49d",
+
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	"features": {
+		"ghcr.io/devcontainers/features/github-cli:1": {}
+	},
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Use 'updateContentCommand' to run commands when creating the container.
+	"updateContentCommand": "",
+
+	// Keep the student CLI compatible with the deployed Classroom50 v1.25.1 teacher CLI.
+	"postCreateCommand": "gh extension install foundation50/gh-student --pin v1.25.1 --force",
+
+	// Configure tool-specific properties.
+	"customizations": {
+		"vscode": {
+			// Set *default* container specific settings.json values on container create.
+			"settings": {
+				"markdown.preview.fontSize": 16,
+				"terminal.integrated.fontSize": 16,
+				"editor.fontSize": 16,
+				"editor.wordWrap": "on",
+				"files.eol": "\n",
+				"git.autofetch": true,
+				"git.enableSmartCommit": true,
+				"terminal.integrated.cwd": "${fileDirname}",
+				// Add file associations
+				"files.associations": {
+					"*.lop": "prolog",
+					"*.pl": "prolog"
+				}
+			},
+			// Add the IDs of extensions you want installed when the container is created.
+			"extensions": [
+				"jeff-hykin.better-prolog-syntax",
+				"GitHub.copilot"
+			]
+		}
+	}
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	// "remoteUser": "root"
+}
