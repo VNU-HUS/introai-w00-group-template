@@ -1,125 +1,232 @@
-# Classroom50 graphical and command-line workflow
+# Classroom50 graphical workflow
 
-This guide shows both supported interfaces used in the course:
+This guide shows the browser workflow used together with the command-line
+instructions in each assignment. Classroom50, GitHub, and the local terminal
+have different roles:
 
-- **Classroom50 web app** for signing in, accepting an assignment, managing group collaborators, and opening submission information;
-- **GitHub web interface** for repositories, Codespaces, Issues, pull requests, commits, Releases, and Feedback PRs;
-- **terminal commands** for exact Git operations and explicit Classroom50 submission.
+| System | Main role in the course |
+|---|---|
+| **Classroom50 web app** | Find or accept an assignment, manage group collaborators, and inspect a weekly submission result. |
+| **GitHub web interface** | Open the repository, Codespaces, Issues, Pull Requests, commits, and the Feedback PR. |
+| **Terminal and CLI** | Run Git commands, public checks, and the course submission command when required. |
 
-The browser path is shown first. The CLI is an equivalent path or a required final step where Classroom50 has no browser button.
+This guide is text-only, so it stays usable on a slow connection and with a
+screen reader. Button labels can change between Classroom50 versions; when a
+label differs from the one printed here, look for the nearest equivalent on the
+same page and report the difference to the instructor.
 
-> Interface reference: checked on 2026-08-29 against the official Classroom50 Web Student Guide and local `gh-student`/`gh-teacher` v1.25.1. The included reference screenshots come from the official Classroom50 wiki; compare them with the pilot classroom before production release.
+## 1. Sign in and find the course
 
-## 1. Sign in
+### Graphical path
 
-Open [classroom50.org](https://classroom50.org) and choose **Sign in with GitHub**.
+1. Open <https://classroom50.org>.
+2. Choose **Sign in with GitHub**.
+3. Open the VNU-HUS organization card marked **Student**.
+4. Open the appropriate classroom and assignment.
 
-![Classroom50 sign-in screen](images/01-sign-in.png)
+### CLI alternative
 
-When your teacher invited you to the GitHub organization, accept that invitation before using the browser assignment flow. The CLI alternative can accept a pending organization invitation while accepting the first assignment:
+When the instructor supplies an acceptance command, use:
 
 ```bash
-gh student accept VNU-HUS <classroom> <assignment>
+gh student accept VNU-HUS <classroom> <assignment-slug>
 ```
 
-## 2. Find the student organization and classroom
+### Expected result
 
-After signing in, open the organization card with the **Student** label. Then open the classroom and its assignments.
+Classroom50 shows the assignment and, after acceptance, a link to the GitHub
+repository created for the student or group.
 
-![Classroom50 organization card marked Student](images/02-student-organization.png)
+### If it does not work
 
-Some assignments remain link-only until their release time. In that case, use the exact assignment link shared by the instructor.
+When no **Student** card for VNU-HUS appears, the organization invitation is
+still pending: open the invitation email or
+<https://github.com/orgs/VNU-HUS/invitation>, accept it, then reload
+Classroom50. When the classroom appears but the assignment does not, the
+acceptance link has not been published yet.
 
-## 3. Accept an assignment
+## 2. Accept an individual assignment
 
-Open the assignment link and choose **Accept assignment**. Classroom50 creates or finds the assignment repository and then displays a link to it.
+### Graphical path
 
-![Classroom50 assignment acceptance page](images/03-accept-assignment.png)
+1. Open the assignment link supplied by the instructor.
+2. Check the classroom and assignment name.
+3. Choose **Accept**.
+4. Follow the repository link shown after acceptance.
 
-CLI equivalent:
+### CLI alternative
 
 ```bash
-gh student accept VNU-HUS <classroom> <assignment>
+gh student accept VNU-HUS <classroom> <assignment-slug>
 ```
 
-If Classroom50 reports that the assignment was already accepted, do not create another repository. Open the existing repository instead.
+Do not accept the same assignment through both routes. They are alternatives
+that should lead to the same repository.
 
-## 4. Add members to a group assignment
+### Expected result
 
-Only the founder accepts a group assignment. On the accepted assignment page, use the edit pencil and choose **Manage collaborators**. Add only the other enrolled group members. A one-person group adds nobody.
+Classroom50 reports that the assignment is accepted and shows a link to a new
+repository whose name ends with your GitHub username.
 
-![Classroom50 Manage collaborators dialog](images/04-manage-collaborators.png)
+### If it does not work
 
-CLI equivalent:
+An acceptance that appears to hang usually finished on the server: reload the
+assignment page before accepting again. When the repository link returns a 404,
+wait a few seconds and reload, because the repository is created immediately
+after acceptance.
+
+## 3. Accept a group assignment and add members
+
+Only the designated founder accepts a group assignment.
+
+### Graphical path
+
+1. The founder opens the group-assignment link and chooses **Accept**.
+2. On the accepted assignment, use the edit pencil near the top-right.
+3. Choose **Manage collaborators**.
+4. Add the other enrolled GitHub usernames. A one-person group adds nobody.
+5. Every member opens the same GitHub repository.
+
+### CLI alternative
 
 ```bash
+gh student accept VNU-HUS <classroom> <assignment-slug>
 gh student invite VNU-HUS/<shared-repository> <github-username>
 ```
 
-The other members join the founder's repository; they do not accept the assignment separately.
+Other members must not accept separately, because that may create duplicate
+repositories.
 
-## 5. Open and work in the GitHub repository
+### Expected result
 
-Follow the repository link shown by Classroom50. On GitHub, choose **Code → Codespaces → Create codespace on main**, or clone the repository locally.
+One shared repository exists for the group, and every added member can open it
+and push.
 
-Classroom50 creates and tracks assignment repositories. It does not edit files or create Git commits. Use GitHub's web tools, VS Code Source Control, GitHub Desktop, or ordinary Git commands for the actual work.
+### If it does not work
 
-Typical terminal workflow:
+A member who cannot open the repository has not been added as a collaborator,
+or has not accepted the repository invitation on GitHub. When a second
+repository was created by mistake, tell the instructor which repository the
+group will use; do not delete anything yourself.
+
+## 4. Open and edit the repository
+
+Classroom50 creates or locates the assignment repository, but it does not edit
+files or create Git commits.
+
+### Graphical path
+
+From the GitHub repository, choose **Code → Codespaces** to create or open a
+Codespace. VS Code Source Control, GitHub Desktop, or another Git client may be
+used for ordinary edits, commits, and pushes.
+
+### Terminal path
 
 ```bash
 git status
-git diff
 git add <files>
-git commit -m "Describe the change"
+git commit -m "<message>"
 git push
 ```
 
-## 6. Submit a Week 0–7 assignment
+Follow the assignment README when it prescribes exact filenames or commit
+messages.
 
-The course's automatically checked assignments use **A tagged commit** submission mode. Ordinary pushes save work but do not create the official graded submission. After pushing the intended commit, run:
+### Expected result
+
+`git push` reports the new commit, and the GitHub repository page shows it.
+
+### If it does not work
+
+When the push is rejected because the remote has newer commits, run
+`git pull --rebase` and push again. When the Codespace fails to start, delete
+it from **Code → Codespaces** and create a new one; no committed work is lost.
+
+## 5. Submit a Week 0–7 assignment
+
+The current weekly assignments require the CLI submission command. The guide
+does not invent a Classroom50 browser **Submit** button.
 
 ```bash
 python3 check_submission.py
 gh student submit
 ```
 
-The current Classroom50 web app has no separate browser **Submit** button equivalent to this explicit tag submission.
+The first command is the public local completion check. The second records the
+current assignment snapshot in Classroom50.
 
-## 7. View a weekly submission and completion result
+### Expected result
 
-Open the assignment in Classroom50 and choose **My submission**. The page shows whether and when a submission was recorded.
+`check_submission.py` prints the remaining requirements or reports that the
+submission is complete, and `gh student submit` reports the recorded snapshot.
 
-![Classroom50 My submission view](images/05-my-submission.png)
+### If it does not work
 
-When autograding is enabled, choose **View grade**. Classroom50 opens the corresponding GitHub Release, where the score and per-check details are stored. The assignment's GitHub Feedback PR is the long-lived place for checklist feedback and discussion.
+`gh student submit` submits what is already pushed, so commit and push first
+when it reports nothing to submit. When the command is not found, reopen the
+Codespace terminal so that the course CLI extension is on the path.
 
-![Classroom50 View grade link and GitHub Release](images/06-view-grade-and-feedback.png)
+## 6. Inspect a Week 0–7 result
 
-The course's weekly score is completion-only:
+### Graphical path
+
+1. Return to the assignment in Classroom50.
+2. Choose **My submission**.
+3. Choose **View grade** when it is available.
+4. Follow the repository link to the GitHub Feedback PR for the detailed
+   checklist and discussion.
+
+### CLI path
+
+The output of `gh student submit` provides the relevant repository, result, or
+feedback links. The browser and CLI views describe the same submitted snapshot.
+
+### Expected result
+
+**My submission** names the submitted snapshot, and **View grade** shows the
+completion result once the automatic check has finished.
+
+### If it does not work
+
+The result appears only after the check finishes, so reload the page after a
+minute. When the result still refers to an older snapshot, submit again and
+check that the newest commit was pushed first.
+
+## 7. Final-project difference
+
+The final project is an empty, non-autograded Classroom50 group assignment.
+Classroom50 is used graphically to accept the assignment, manage collaborators,
+and open the repository. It does **not** provide a meaningful project
+**View grade** page or a browser **Submit** button.
+
+The authoritative project milestones are instead:
 
 ```text
-100/100  complete submission
-0/100    incomplete submission
+proposal: exact Git commit URL posted in the group's topic issue
+final:    exact Git commit URL posted in the same topic issue
 ```
 
-It does not certify mathematical, logical, algorithmic, or factual correctness.
+The instructor grades the final project manually.
 
-## 8. Important final-project difference
+### Expected result
 
-The final-examination project uses an empty, non-autograded Classroom50 repository. The browser still supports assignment acceptance, collaborator management, and opening the repository, but there is no meaningful **View grade** result and no Classroom50 submission button.
+The project repository is empty until the group bootstraps the public starter,
+and no automatic score, Release, or Feedback PR ever appears.
 
-For that project, the authoritative proposal and final submissions are exact Git commit URLs posted in the group's existing class topic issue, as specified by its `Submission Guide.md`.
+### If it does not work
 
-## 9. Common recovery steps
+When Classroom50 shows no grade for the project, nothing is wrong: the project
+carries no automatic grade. Post the exact commit URL in the group's topic
+issue, which is the only record the instructor grades.
 
-- **Wrong person accepted a group assignment:** stop before inviting others and contact the instructor; do not create more repositories.
-- **Assignment already accepted:** open the existing repository.
-- **Organization or classroom is missing:** verify the GitHub organization invitation and sign-in authorization.
-- **Cannot add a collaborator:** verify that the account is an enrolled member of the same classroom and that the group limit is not exceeded.
-- **Wrong remote repository:** inspect `git remote -v` before pushing.
-- **No result after `git push`:** for the course's tag-only weekly assignments, run `gh student submit` after pushing.
-- **No View grade link yet:** wait for the GitHub Actions run to finish, refresh **My submission**, and inspect the repository's Actions or Releases page.
+## 8. Getting help
 
-## Screenshot provenance
+Every section above states the browser path, the command-line equivalent, the
+expected result, and what to do when the result differs. When none of the
+recovery instructions applies, report the assignment, the exact step, and the
+message shown, so that the instructor can reproduce the problem.
 
-See [`images/SOURCES.md`](images/SOURCES.md). Text instructions are authoritative; screenshots are visual aids and may change when Classroom50 updates its interface.
+Official project documentation:
+
+- [Classroom50 Web Student Guide](https://github.com/foundation50/classroom50/wiki/Web-Student-Guide)
+- [Classroom50 CLI Student Guide](https://github.com/foundation50/classroom50/wiki/CLI-Student-Guide)
