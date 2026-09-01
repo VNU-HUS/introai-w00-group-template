@@ -1,7 +1,7 @@
 # Source inventory
 
 - Source repository: `hoanganhduc/VNU-HUS-IntroAI-Exercises`
-- Source commit: `2c850f92198db870f77458545a1db18e9a331965`
+- Source commit: `f9e86d9a71c750cfddfee8516de1b6fbcb1a3834`
 - Source slug: `Classroom50/w00-group-collaboration`
 
 ```text

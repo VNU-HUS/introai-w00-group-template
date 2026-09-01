@@ -18,7 +18,7 @@ See [`docs/CLASSROOM50-WEB-UI.md`](docs/CLASSROOM50-WEB-UI.md) for browser accep
 
 Only the designated founder accepts the Classroom50 assignment.
 
-**Graphical path:** the founder opens the assignment link, chooses **Accept assignment**, then uses the edit pencil and **Manage collaborators**. A singleton adds nobody. For two to five students, the founder adds the other enrolled members.
+**Graphical path:** the founder opens the assignment link, chooses **Accept assignment**, then opens **Assignment settings** and **Manage collaborators**. A singleton adds nobody. For two to five students, the founder adds the other enrolled members.
 
 **CLI alternative:**
 
@@ -105,12 +105,14 @@ python3 check_submission.py
 gh student submit
 ```
 
-Every member opens the assignment in Classroom50, chooses **My submission**, then opens **View grade** and the shared GitHub Feedback PR. Everyone confirms that the same newest submission and result are visible.
+Every member opens the assignment in Classroom50, chooses **My submission**, then opens **View score** and the shared GitHub Feedback PR. Everyone confirms that the same newest submission and result are visible.
 
 ## What the completion checker verifies
 
 The checker verifies only that:
 
+- `team.json`, member profiles, and `summary.md` are regular files rather than
+  symbolic links;
 - `team.json` contains one to five distinct GitHub usernames;
 - every listed member has a filled `members/<username>.md`;
 - `summary.md` is filled;
@@ -136,7 +138,7 @@ The expected final result is:
 ## Source provenance
 
 - Source repository: `hoanganhduc/VNU-HUS-IntroAI-Exercises`
-- Source commit: `2c850f92198db870f77458545a1db18e9a331965`
+- Source commit: `f9e86d9a71c750cfddfee8516de1b6fbcb1a3834`
 - Source slug: `Classroom50/w00-group-collaboration`
 - Complete file inventory: [`SOURCE-INVENTORY.md`](SOURCE-INVENTORY.md)
 <!-- SOURCE-PROVENANCE:END -->

@@ -51,7 +51,7 @@ acceptance link has not been published yet.
 
 1. Open the assignment link supplied by the instructor.
 2. Check the classroom and assignment name.
-3. Choose **Accept**.
+3. Choose **Accept assignment**.
 4. Follow the repository link shown after acceptance.
 
 ### CLI alternative
@@ -81,8 +81,8 @@ Only the designated founder accepts a group assignment.
 
 ### Graphical path
 
-1. The founder opens the group-assignment link and chooses **Accept**.
-2. On the accepted assignment, use the edit pencil near the top-right.
+1. The founder opens the group-assignment link and chooses **Accept assignment**.
+2. On the accepted assignment, open **Assignment settings**.
 3. Choose **Manage collaborators**.
 4. Add the other enrolled GitHub usernames. A one-person group adds nobody.
 5. Every member opens the same GitHub repository.
@@ -139,21 +139,26 @@ messages.
 ### If it does not work
 
 When the push is rejected because the remote has newer commits, run
-`git pull --rebase` and push again. When the Codespace fails to start, delete
-it from **Code → Codespaces** and create a new one; no committed work is lost.
+`git pull --ff-only`. If that reports divergent histories, stop and follow the
+assignment-specific recovery instructions or ask the instructor; rebasing can
+destroy merge-history evidence required by the group assignment. Before
+deleting a Codespace, commit and push any work you need to keep. Unpushed work
+can be lost when a Codespace is deleted.
 
 ## 5. Submit a Week 0–7 assignment
 
-The current weekly assignments require the CLI submission command. The guide
-does not invent a Classroom50 browser **Submit** button.
+The course's current weekly assignments use the CLI submission command below.
+Classroom50 may also display a browser submission action; follow the assignment
+README when the available interfaces differ.
 
 ```bash
 python3 check_submission.py
 gh student submit
 ```
 
-The first command is the public local completion check. The second records the
-current assignment snapshot in Classroom50.
+The first command is the public local completion check. For the course's tagged
+submission mode, the second command pushes the current branch and a submission
+tag, which records the official snapshot and starts grading.
 
 ### Expected result
 
@@ -162,9 +167,10 @@ submission is complete, and `gh student submit` reports the recorded snapshot.
 
 ### If it does not work
 
-`gh student submit` submits what is already pushed, so commit and push first
-when it reports nothing to submit. When the command is not found, reopen the
-Codespace terminal so that the course CLI extension is on the path.
+Commit the intended snapshot before running `gh student submit`; the course
+instructions also ask you to push regularly so that work is backed up. When
+the command is not found, reopen the Codespace terminal so that the course CLI
+extension is on the path.
 
 ## 6. Inspect a Week 0–7 result
 
@@ -172,7 +178,7 @@ Codespace terminal so that the course CLI extension is on the path.
 
 1. Return to the assignment in Classroom50.
 2. Choose **My submission**.
-3. Choose **View grade** when it is available.
+3. Choose **View score** when it is available.
 4. Follow the repository link to the GitHub Feedback PR for the detailed
    checklist and discussion.
 
@@ -183,7 +189,7 @@ feedback links. The browser and CLI views describe the same submitted snapshot.
 
 ### Expected result
 
-**My submission** names the submitted snapshot, and **View grade** shows the
+**My submission** names the submitted snapshot, and **View score** shows the
 completion result once the automatic check has finished.
 
 ### If it does not work
@@ -196,8 +202,8 @@ check that the newest commit was pushed first.
 
 The final project is an empty, non-autograded Classroom50 group assignment.
 Classroom50 is used graphically to accept the assignment, manage collaborators,
-and open the repository. It does **not** provide a meaningful project
-**View grade** page or a browser **Submit** button.
+and open the repository. A Classroom50 submission or **View score** page is not
+the authoritative final-project hand-in record.
 
 The authoritative project milestones are instead:
 

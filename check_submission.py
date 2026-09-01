@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import re
+import stat
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
@@ -60,6 +61,26 @@ def contains_placeholder(text: str) -> bool:
     return any(token in upper for token in PLACEHOLDERS)
 
 
+def is_regular_file(path: Path) -> bool:
+    """Reject a file if it or a path component below the package is a symlink."""
+
+    try:
+        relative = path.relative_to(ASSIGNMENT_DIR)
+    except ValueError:
+        return False
+
+    current = ASSIGNMENT_DIR
+    try:
+        for part in relative.parts[:-1]:
+            current /= part
+            mode = current.lstat().st_mode
+            if stat.S_ISLNK(mode) or not stat.S_ISDIR(mode):
+                return False
+        return stat.S_ISREG(path.lstat().st_mode)
+    except OSError:
+        return False
+
+
 def require_answer(label: str, value: str, minimum: int = 1) -> None:
     cleaned = value.strip()
     if len(cleaned) < minimum or contains_placeholder(cleaned):
@@ -79,11 +100,11 @@ def extract_section(text: str, heading: str, source: str) -> str:
 
 def load_team() -> tuple[str, list[str]]:
     path = ASSIGNMENT_DIR / "team.json"
-    if not path.is_file():
-        raise CheckError("team.json is missing")
+    if not is_regular_file(path):
+        raise CheckError("team.json must be a regular file, not a symbolic link")
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
         raise CheckError(f"team.json is not valid JSON: {exc}") from exc
 
     if not isinstance(data, dict) or set(data) != {"team_name", "members"}:
@@ -111,9 +132,16 @@ def load_team() -> tuple[str, list[str]]:
 
 def check_profile(member: str) -> None:
     path = ASSIGNMENT_DIR / "members" / f"{member}.md"
-    if not path.is_file():
-        raise CheckError(f"members/{member}.md is missing")
-    text = path.read_text(encoding="utf-8")
+    if not is_regular_file(path):
+        raise CheckError(
+            f"members/{member}.md must be a regular file, not a symbolic link"
+        )
+    try:
+        text = path.read_text(encoding="utf-8")
+    except (OSError, UnicodeError) as exc:
+        raise CheckError(
+            f"members/{member}.md is not readable UTF-8 text: {exc}"
+        ) from exc
     username = extract_section(text, "GitHub username", path.name)
     command = extract_section(text, "One Git command I used", path.name)
     explanation = extract_section(text, "What the command does", path.name)
@@ -129,9 +157,12 @@ def check_profile(member: str) -> None:
 
 def check_summary() -> None:
     path = ASSIGNMENT_DIR / "summary.md"
-    if not path.is_file():
-        raise CheckError("summary.md is missing")
-    text = path.read_text(encoding="utf-8")
+    if not is_regular_file(path):
+        raise CheckError("summary.md must be a regular file, not a symbolic link")
+    try:
+        text = path.read_text(encoding="utf-8")
+    except (OSError, UnicodeError) as exc:
+        raise CheckError(f"summary.md is not readable UTF-8 text: {exc}") from exc
     for heading in (
         "What a branch is for",
         "What a pull request is for",

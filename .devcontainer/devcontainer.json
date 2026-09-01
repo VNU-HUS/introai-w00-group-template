@@ -18,8 +18,8 @@
 	// Use 'updateContentCommand' to run commands when creating the container.
 	"updateContentCommand": "",
 
-	// Keep the student CLI compatible with the deployed Classroom50 v1.25.1 teacher CLI.
-	"postCreateCommand": "gh extension install foundation50/gh-student --pin v1.25.1 --force",
+	// GitHub CLI pins binary extensions by release tag.
+	"postCreateCommand": "gh extension install foundation50/gh-student --pin v1.40.0 --force",
 
 	// Configure tool-specific properties.
 	"customizations": {
